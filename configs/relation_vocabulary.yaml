@@ -1,0 +1,34 @@
+# Controlled vocabulary for VLM-refined object-relation graph construction.
+# The VLM must choose semantic_relation and safety_risk_type from these lists.
+allowed_relations:
+  - standing_near
+  - walking_near
+  - sitting_on
+  - lying_on
+  - fallen_near
+  - touching
+  - holding
+  - carrying
+  - using
+  - climbing_over
+  - entering
+  - leaving
+  - close_to_fire
+  - near_smoke
+  - unsafe_proximity
+  - equipment_interaction
+  - object_handling
+  - property_damage
+  - unclear
+  - not_visible
+  - insufficient_context
+allowed_safety_risk_types:
+  - none
+  - fall
+  - fire
+  - intrusion
+  - unsafe_proximity
+  - object_handling
+  - equipment_interaction
+  - property_damage
+  - unclear

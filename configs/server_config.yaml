@@ -1,0 +1,97 @@
+server: {host: "0.0.0.0", port: 8008}
+storage:
+  root_dir: "./storage"
+  events_dir: "./storage/events"
+  logs_dir: "./storage/logs"
+  tmp_dir: "./storage/tmp"
+  db_path: "./storage/db/gpu_server.sqlite3"
+security:
+  require_edge_api_key: false
+  edge_api_key_env: "EDGE_API_KEY"
+event_ingest:
+  max_zip_size_mb: 200
+  safe_extract: true
+  required_files: ["metadata.json", "detections.json", "frame_t.jpg"]
+processing: {auto_process_on_upload: true, startup_recover: true}
+event_graph:
+  ignore_labels: ["motion_candidate"]
+  geometry:
+    near_distance_px: 180
+    overlap_iou_threshold: 0.12
+    max_edges_per_event: 80
+    touching_label: "touching_candidate"
+    default_relation: "near"
+vlm:
+  provider: "ollama"
+  candidate_policy: "semantic_relation_refinement"
+  max_candidates_per_event: 3
+  min_novelty_for_vlm: 0.35
+  min_priority: 0.45
+  safety_labels: ["person", "fire", "smoke", "fence", "machine", "forklift", "vehicle", "floor", "ground", "bag", "door", "ladder"]
+vlm_relation_refinement:
+  enabled: true
+  max_pairs_per_event: 3
+  allowed_relations:
+    - standing_near
+    - walking_near
+    - sitting_on
+    - lying_on
+    - fallen_near
+    - touching
+    - holding
+    - carrying
+    - using
+    - climbing_over
+    - entering
+    - leaving
+    - close_to_fire
+    - near_smoke
+    - unsafe_proximity
+    - equipment_interaction
+    - object_handling
+    - property_damage
+    - unclear
+    - not_visible
+    - insufficient_context
+  allowed_safety_risk_types: ["none", "fall", "fire", "intrusion", "unsafe_proximity", "object_handling", "equipment_interaction", "property_damage", "unclear"]
+gemini: {api_key_env: "GEMINI_API_KEY", model: "gemini-2.5-flash", timeout_sec: 90}
+ollama:
+  base_url: "http://127.0.0.1:11434"
+  model: "nemotron3:33b"
+  timeout_sec: 180
+  options: {num_ctx: 4096, num_predict: 384, temperature: 0}
+evaluation:
+  enabled: true
+  eval_runs_dir: "./storage/eval_runs"
+  graph_namespace_policy: "run_id_camera"
+  default_update_global_graph: true
+  phase_policy:
+    warmup:
+      update_global_graph: true
+      metric_include: false
+      force_decision: "WATCH"
+    eval:
+      update_global_graph: false
+      metric_include: true
+      force_decision: null
+  safe_update:
+    enabled: false
+    max_final_score_for_update: 0.25
+    allowed_decisions: ["NORMAL"]
+  aggregation:
+    default_score_key: "final_score"
+    threshold: 0.50
+    topk_ratio: 0.05
+
+global_graph:
+  enabled: true
+  warmup_events: 100
+  warmup_decision: "WATCH"
+  rolling_window_sec: 300
+  update_geometry_edges: true
+  update_semantic_edges: true
+  novelty: {new_node_score: 1.0, new_edge_score: 1.0, min_count_for_normal: 5, rarity_decay: "sqrt"}
+
+scoring:
+  weights: {graph_novelty: 0.25, semantic_relation_novelty: 0.20, vlm_semantic_risk: 0.25, temporal_persistence: 0.15, rule_risk: 0.10, confidence_risk: 0.03, uncertainty_risk: 0.02}
+  thresholds: {watch: 0.30, suspicious: 0.55, abnormal: 0.80}

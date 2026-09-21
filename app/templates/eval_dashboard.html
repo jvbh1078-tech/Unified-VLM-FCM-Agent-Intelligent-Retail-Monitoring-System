@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Experiment Dashboard</title>
+  <link rel="stylesheet" href="/static/dashboard.css?v=5.5">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <p class="eyebrow">Dataset Scenario Replay</p>
+    <h1>Experiment Dashboard</h1>
+  </div>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/dashboard/eval">Experiment</a>
+    <a href="/dashboard/global-graph">Global Graph</a>
+  </nav>
+</header>
+<main>
+  <section class="hero-grid">
+    <div class="hero-card">
+      <p class="eyebrow">Experiment mode</p>
+      <h2>Warm-up → Mixed stream → Event / Video metrics</h2>
+      <p class="muted">Edge Server의 dataset scenario replay event를 run_id 기준으로 추적하고, phase, score, decision, AUROC/F1 등 평가 지표를 확인합니다.</p>
+      <div class="toolbar">
+        <select id="runSelect"></select>
+        <button id="refreshBtn">Refresh</button>
+        <button id="aggregateBtn">Aggregate & metrics</button>
+        <span id="runState" class="pill">loading</span>
+      </div>
+    </div>
+    <div class="health-card" id="metricBox">Loading metrics...</div>
+  </section>
+
+  <section class="cards" id="evalCards"></section>
+
+  <section class="grid2">
+    <div class="panel">
+      <div class="section-head"><h2>Score timeline</h2><span class="muted">stream_time_sec 기준 event score</span></div>
+      <canvas id="timeline" height="220"></canvas>
+      <div id="timelineLegend" class="muted"></div>
+    </div>
+    <div class="panel">
+      <div class="section-head"><h2>Latest processing image</h2><span class="muted">가장 최근 처리 event</span></div>
+      <div id="latestPreview"></div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <div class="section-head"><h2>Latest event graph</h2><span class="muted">geometry + VLM-refined semantic relation</span></div>
+      <div id="svgGraph" class="force-graph-wrap"></div>
+    </div>
+    <div class="panel">
+      <div class="section-head"><h2>Selected / latest relation</h2><span class="muted">VLM relation refinement</span></div>
+      <div id="relationPanel" class="graph-list">Loading...</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head"><h2>Eval events</h2><span class="muted">최근 experiment event 결과</span></div>
+    <table id="evalEvents"><thead><tr><th>event</th><th>phase</th><th>video</th><th>label</th><th>decision</th><th>score</th><th>graph</th><th>semantic</th><th>vlm</th></tr></thead><tbody></tbody></table>
+  </section>
+</main>
+<script src="/static/force_graph.js?v=5.5"></script>
+<script src="/static/eval_dashboard.js?v=5.5"></script>
+</body>
+</html>

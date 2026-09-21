@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GPU Server v5 Dashboard</title>
+  <link rel="stylesheet" href="/static/dashboard.css?v=5.1">
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <p class="eyebrow">Unified VLM-FCM Agent</p>
+    <h1>GPU Server v5 Graph-VLM Dashboard</h1>
+  </div>
+  <nav>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/dashboard/eval">Experiment</a>
+    <a href="/dashboard/global-graph">Global Graph</a>
+  </nav>
+</header>
+<main>
+  <section class="hero-grid">
+    <div class="hero-card">
+      <p class="eyebrow">Pipeline</p>
+      <h2>Event Graph → Global Normality Graph → VLM Verification</h2>
+      <p class="muted">Edge Server에서 올라온 YOLO 관측을 카메라별 정상 관계 그래프에 누적하고, 낯선 관계만 VLM으로 검증합니다.</p>
+      <div class="toolbar">
+        <button id="refreshBtn">Refresh</button>
+        <button id="recoverBtn">Recover stale</button>
+        <span id="wsState" class="pill">ws: connecting</span>
+      </div>
+    </div>
+    <div class="health-card" id="healthBox">Loading health...</div>
+  </section>
+
+  <section class="cards" id="summary"></section>
+
+  <section class="grid2">
+    <div class="panel">
+      <div class="section-head"><h2>Event lanes</h2><span class="muted">입력 / 처리중 / 완료 / 실패</span></div>
+      <div class="lanes" id="lanes"></div>
+    </div>
+    <div class="panel">
+      <div class="section-head"><h2>Edge nodes</h2><span class="muted">heartbeat 기반 상태</span></div>
+      <div id="edgeCards" class="edge-cards"></div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <div class="section-head"><h2>Recent events</h2><span class="muted">최근 처리 이벤트</span></div>
+      <table id="events"><thead><tr><th>event</th><th>camera</th><th>status</th><th>decision</th><th>score</th><th>updated</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="panel">
+      <div class="section-head"><h2>Storage & policy</h2><span class="muted">운영 상태</span></div>
+      <div id="storageBox" class="kv"></div>
+      <hr>
+      <div id="policyBox" class="kv"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-head"><h2>Global graph quick view</h2><span class="muted">가장 최근 camera 기준</span></div>
+    <div id="quickGraph" class="quick-graph"></div>
+  </section>
+</main>
+<script src="/static/dashboard.js?v=5.1"></script>
+</body>
+</html>
